@@ -141,16 +141,6 @@ export class SubscriptionServer {
       // Add `upgradeReq` to the socket object to support old API, without creating a memory leak
       // See: https://github.com/websockets/ws/pull/1099
       (socket as any).upgradeReq = request;
-      // NOTE: the old GRAPHQL_SUBSCRIPTIONS protocol support should be removed in the future
-      if (socket.protocol === undefined ||
-        (socket.protocol.indexOf(GRAPHQL_WS) === -1 && socket.protocol.indexOf(GRAPHQL_SUBSCRIPTIONS) === -1)) {
-        // Close the connection with an error code, ws v2 ensures that the
-        // connection is cleaned up even when the closing handshake fails.
-        // 1002: protocol error
-        socket.close(1002);
-
-        return;
-      }
 
       const connectionContext: ConnectionContext = Object.create(null);
       connectionContext.isLegacy = false;
